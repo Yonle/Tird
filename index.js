@@ -176,9 +176,6 @@ a.post("/create", (q, s) => {
       const { t, d } = q.body;
       if (typeof(t) !== 'string' || typeof(d) !== 'string' || !t.length || !d.length) return s.status(400).end("Invalid Body");
 
-      if (q.ct && !q.wl)
-        return c.newCaptchaSession(q, s, "create");
-
       const id = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
 
       const filedir = q.file?.destination;
