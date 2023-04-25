@@ -8,8 +8,11 @@
 A text & image bulletin board.
 
 ## Requirement
-- Node >= 16
+- NodeJS >= 16
 - SQLite3 libs installed.
+- [libvips](https://github.com/libvips/libvips) >= 8.14.2
+  You should not need to compile libvips from source if sharp could be installed in your machine/container without any problem.
+
 - That's all.
 
 ## Setting up
