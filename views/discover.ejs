@@ -20,7 +20,7 @@
             <small class="date"><%= i[0].length - 1 %> replies - <%= (new Date(i[0].ts)).toLocaleString("ia") %></small><br>
 
           <% if (i[0].furl) { %><small>File: <%= i[0].furl %></small>
-          <a class="imgurl" href="/u/<%= i[0].furl %>.webp"><img src="/u/<%= i[0].furl %>" /></a><% } %><pre><%= i[0].d %></pre>
+          <a class="imgurl" href="/u/<%= i[0].furl %>"><img src="/u/<%= i[0].furl %>.webp" /></a><% } %><pre><%= i[0].d %></pre>
         </div>
         <!--- Replies --->
         <div class="replies">
