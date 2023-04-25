@@ -8,7 +8,7 @@ INSERT INTO hello_there (ts, t, d) VALUES
 Toard is written in Javascript (NodeJS)"),
   (1639575229137, "Is Toard 4chan clone?", "4chan is a Image bulletin board, While Toard is a complete text-only bulletin board. Both is different when you see of how it works."),
   (1639575229137, "How to create a post?", "You see a button at the near top bar? Press it. You need to write your post title, and your description. Same as how do you reply to a post."),
-  (1639575229137, "Where's the source code?", "https://github.com/Yonle/Toard"),
+  (1639575229137, "Where's the source code?", "https://github.com/Yonle/Tird"),
   (1639575229137, "Need API to build your own Toard Client?", "See /toard_api Endpoint"),
   (1639575229137, "Let's begin the journey!", 'Press the "Discover" button next to the "Home" button to see available threads in this server!');
 
