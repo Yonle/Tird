@@ -1,15 +1,11 @@
 ```
-                                   
-mmmmmmm                          # 
-   #     mmm    mmm    m mm   mmm# 
-   #    #" "#  "   #   #"  " #" "# 
-   #    #   #  m"""#   #     #   # 
-   #    "#m#"  "mm"#   #     "#m## 
-                                   
-                                   
+ _______        __
+/_  __(_)______/ /  Original Fork of:
+ / / / / __/ _  /   https://github.com/Yonle/Toard
+/_/ /_/_/  \_,_/                                     
 ```
 
-A text-only bulletin board.
+A text & image bulletin board.
 
 ## Requirement
 - Node >= 16

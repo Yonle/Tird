@@ -28,7 +28,7 @@ async function generateDiscover(db, host) {
   for (ct of db.prepare("SELECT id FROM __threadlists;").iterate()) {
     try {
       // Warning: Any mistake in this zone will resulting total destruction.
-      let t = db.prepare(`SELECT ts, t, d FROM "${ct.id}";`).all();
+      let t = db.prepare(`SELECT * FROM "${ct.id}";`).all();
       t[0].id = ct.id;
       t[0].length = t.length;
       bds.push(t);

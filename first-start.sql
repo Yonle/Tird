@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS hello_there (ts INTEGER, t TEXT, d TEXT);
-CREATE TABLE IF NOT EXISTS toard_api (ts INTEGER, t TEXT, d TEXT);
+CREATE TABLE IF NOT EXISTS hello_there (ts INTEGER, t TEXT, d TEXT, furl TEXT);
+CREATE TABLE IF NOT EXISTS toard_api (ts INTEGER, t TEXT, d TEXT, furl TEXT);
 
-INSERT INTO hello_there VALUES
+INSERT INTO hello_there (ts, t, d) VALUES
   (1639575229137, "Welcome to Toard", "Toard is a open source social Bulletin board, That used to discuss some stuff in real, internet, Music, or tech."),
   (1639575229137, "What is Toard?", "Toard is a Text only Bulletin board. And it's supposed to be anonymous for everyone. No registration is required, Javascript being optional frontend.
 
@@ -9,9 +9,10 @@ Toard is written in Javascript (NodeJS)"),
   (1639575229137, "Is Toard 4chan clone?", "4chan is a Image bulletin board, While Toard is a complete text-only bulletin board. Both is different when you see of how it works."),
   (1639575229137, "How to create a post?", "You see a button at the near top bar? Press it. You need to write your post title, and your description. Same as how do you reply to a post."),
   (1639575229137, "Where's the source code?", "https://github.com/Yonle/Toard"),
-  (1639575229137, "Need API to build your own Toard Client?", "See /toard_api Endpoint");
+  (1639575229137, "Need API to build your own Toard Client?", "See /toard_api Endpoint"),
+  (1639575229137, "Let's begin the journey!", 'Press the "Discover" button next to the "Home" button to see available threads in this server!');
 
-INSERT INTO toard_api VALUES
+INSERT INTO toard_api (ts, t, d) VALUES
   (1639575229137, "Toard API", "A short documentation of Toard API, Used for creating your own Toard Client, and etc. The API respond in JSON format, So you need to have a prepared JSON parser in your client."),
   (1639575229137, "/api/[id]", "A endpoint to fetch all Threads / Replies.
 

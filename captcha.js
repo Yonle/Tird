@@ -29,7 +29,8 @@ module.exports.newCaptchaSession = function (q, s, onid) {
 
   return tim.set(sessID, setTimeout(() => {
     db.exec(`DELETE FROM verification_sessions WHERE sess = '${sessID}';`);
-  }, 60000 * 3));
+    if (q.body.furl) f.rm(__dirname + "/__uploads/" + q.body.furl, _ => null);
+  }, 60000 * 1));
 }
 
 module.exports.getCaptchaSession = function (sessid) {

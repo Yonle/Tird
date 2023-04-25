@@ -6,8 +6,8 @@
   <body>
     <div id="top"></div>
     <div class="fixed top">
-      <b>Toard - </b>
-      <span>Text only bulletin board</span>
+      <b>Tird - </b>
+      <span>Text & image bulletin board</span>
     </div>
     <a href="#create" class="fixed top right">New Thread</a
     ><br /><br />
@@ -20,7 +20,8 @@
           <b><a href="<%= srch ? "/" + p.id + "/#t" + p.ts : "#t" + p.ts %>"><%= p.t %></a></b>
           <small class="date"><%- srch ? `at <a href="/${p.id}/">/${p.id}/</a> - ` : "" %><%= (new Date(p.ts)).toLocaleString("ia") %></small>
         </div>
-        <pre><%= p.d %></pre>
+        <% if (p.furl) { %><small>File: <%= p.furl %></small>
+        <a class="imgurl" href="/u/<%= p.furl %>"><img src="/u/<%= p.furl %>.webp" /></a><% } %><pre><%= p.d %></pre>
       </div>
       <% }; %>
     </div>
@@ -34,6 +35,7 @@
         method="POST"
         class="fixed left right bottom popup"
         style="bottom: 40px"
+        enctype="multipart/form-data"
       >
         <div>
           <input
@@ -51,7 +53,8 @@
           id="reply_comment"
           required
           autofocus
-        ></textarea>
+        ></textarea><br>
+        <span>Image (optional): <input type="file" name="f" accept="image/*" /></span><br>
         <button
           class="right"
           style="color: black; background: white"
@@ -72,6 +75,7 @@
         method="POST"
         class="fixed left right popup"
         style="bottom: 40px"
+        enctype="multipart/form-data"
       >
         <div>
           <input
@@ -91,6 +95,7 @@
           autofocus
         ></textarea
         ><br />
+        <span>Image (optional): <input type="file" name="f" accept="image/*" /></span><br>
         <button
           class="right"
           style="float: right; color: black; background: white"

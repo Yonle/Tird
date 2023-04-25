@@ -66,14 +66,16 @@ a {
 }
 
 .post {
-  margin-bottom: 6px;
+  overflow-y: hidden;
+  /* margin-bottom: 6px; */
 }
 
 .post img {
   float: left;
-  max-width: 140px;
-  max-height: 150px;
+  max-width: 100px;
+  max-height: 180px;
 
+  margin-top: 5px;
   margin-right: 10px;
   margin-bottom: 10px;
 }

@@ -3,9 +3,39 @@ const eps = require("express");
 const com = require("compression");
 const fig = require("figlet");
 const bp = require("body-parser");
+const m = require("multer");
+const s = require("sharp");
 const p = require("./pages.js");
 const c = require("./captcha.js");
 const f = require("fs");
+const ud = __dirname + "/__uploads";
+const u = m({
+  dest: ud,
+  limits: 1024 * 1024 * 8,
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.includes("image")) return cb(null, true);
+    cb(null, false);
+  }
+});
+
+const pimg = furl => {
+  if (!furl) return;
+  s(ud + "/" + furl)
+    .resize(250, 250, { fit: 'inside' })
+    .toFile(ud + "/" + furl + ".webp")
+    .catch(err => {
+      f.rmSync(ud + "/" + furl);
+      s({
+        text: {
+          text: "Image Corrupted", font: "sans", dpi: 300
+        }
+      })
+        .resize(250, 250, { fit: 'inside' })
+        .toFile(ud + "/" + furl + ".webp");
+    });
+}
+
+const su = u.single("f");
 const a = eps();
 
 // For temporary time, We're gonna use this for main topic.
@@ -134,29 +164,51 @@ a.set("views", __dirname + "/views");
 a.set("view engine", "ejs");
 a.use(eps.static(__dirname + "/__pages"));
 a.use(eps.static(__dirname + "/public"));
+a.use("/u/", eps.static(__dirname + "/__uploads"));
 a.use(bp.urlencoded({ extended: true }));
 a.use(bp.json());
 
 a.get("/", (q, s) => s.redirect("/hello_there/"));
 a.post("/create", (q, s) => {
-    const { t, d } = q.body;
-    if (typeof(t) !== 'string' || typeof(d) !== 'string' || !t.length || !d.length) return s.status(400).end("Invalid Body");
+    su(q, s, err => {
+      if (err) return q.status(500).end(err.toString());
 
-    if (q.ct && !q.wl)
-      return c.newCaptchaSession(q, s, "create");
+      const { t, d } = q.body;
+      if (typeof(t) !== 'string' || typeof(d) !== 'string' || !t.length || !d.length) return s.status(400).end("Invalid Body");
 
-    const id = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
+      if (q.ct && !q.wl)
+        return c.newCaptchaSession(q, s, "create");
 
-    db.exec(`CREATE TABLE '${id}' (ts INTEGER, t TEXT, d TEXT);`);
-    db.prepare("INSERT OR IGNORE INTO __threadlists VALUES (?);").run(id.toString());
-    ths++;
+      const id = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
 
-    const ins = db.prepare(`INSERT INTO '${id}' VALUES (@ts, @t, @d);`);
-    ins.run({ ts: Date.now(), t, d });
+      const filedir = q.file?.destination;
+      const newfilename = q.file?.filename + "." + q.file?.mimetype.split("/").pop();
 
-    p.generate(db, id, q.headers?.host);
+      if (filedir) {
+        f.renameSync(
+          filedir + "/" + q.file.filename,
+          filedir + "/" + newfilename
+        );
+      }
 
-    s.redirect("/" + id + "/");
+      if (q.ct && !q.wl) {
+        q.body.furl = filedir ? newfilename : null;
+        return c.newCaptchaSession(q, s, "create");
+      }
+
+      db.exec(`CREATE TABLE '${id}' (ts INTEGER, t TEXT, d TEXT, furl TEXT);`);
+      db.prepare("INSERT OR IGNORE INTO __threadlists VALUES (?);").run(id.toString());
+      ths++
+
+      const ins = db.prepare(`INSERT INTO '${id}' VALUES (@ts, @t, @d, @furl);`);
+
+      ins.run({ ts: Date.now(), t, d, furl: filedir ? newfilename : null });
+
+      pimg(filedir ? newfilename : null);
+      p.generate(db, id, q.headers?.host);
+
+      s.redirect("/" + id + "/");
+    });
 });
 
 a.post("/search", (q, s) => {
@@ -221,25 +273,27 @@ a.post("/verify", (q, s) => {
     if (!q.getCookie("verify_sess") || !sess || sess.question === "null" || sess.answer === "null") return s.status(400).end("Session expired. try again");
 
     if (typeof(q.body?.answer) === 'string' && c.verifyCaptchaAnswer(sess, q.body?.answer)) {
-      let { t, d } = JSON.parse(sess.body);
+      let { t, d, furl } = JSON.parse(sess.body);
       if (!d || !d.length) return s.status(400).end("Invalid Body");
       if (!t) t = "Anonymous";
 
       try {
         if (sess.onid === "create") {
           sess.onid = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
-          db.exec(`CREATE TABLE '${sess.onid}' (ts INTEGER, t TEXT, d TEXT);`);
+          db.exec(`CREATE TABLE '${sess.onid}' (ts INTEGER, t TEXT, d TEXT, furl TEXT);`);
           ths++;
         }
 
-        const ins = db.prepare(`INSERT INTO '${sess.onid}' VALUES (@ts, @t, @d);`);
+        const ins = db.prepare(`INSERT INTO '${sess.onid}' VALUES (@ts, @t, @d, @furl);`);
         const ts = Date.now();
-        ins.run({ ts, t, d });
+
+        ins.run({ ts, t, d, furl });
 
         db.prepare(`DELETE FROM __threadlists WHERE id = ?;`).run(sess.onid.toString());
         db.prepare("INSERT OR IGNORE INTO __threadlists VALUES (?);").run(sess.onid.toString());
 
-        p.generate(db, id, q.headers?.host);
+        pimg(furl);
+        p.generate(db, sess.onid, q.headers?.host);
 
         s.redirect(`/${sess.onid}/#t${ts}`);
       } catch (err) {
@@ -260,30 +314,47 @@ a.use("/:id/reply", (q, s, n) => {
 });
 
 a.post("/:id/reply", (q, s) => {
-    let { t, d } = q.body;
-    if (typeof(d) !== 'string' || !d.length || (t && typeof(t) !== 'string')) return s.status(400).end("Invalid Body");
+    su(q, s, err => {
+      let { t, d } = q.body;
+      if (typeof(d) !== 'string' || !d.length || (t && typeof(t) !== 'string')) return s.status(400).end("Invalid Body");
 
-    if (["hello_there", "toard_api", "search"].includes(q.id)) return s.status(400).end("Post is not replyable.");
-    if (q.ct && !q.wl)
-      return c.newCaptchaSession(q, s, q.id);
+      if (["hello_there", "toard_api", "search"].includes(q.id)) return s.status(400).end("Post is not replyable.");
 
-    if (!t) t = "Anonymous";
+      if (!t) t = "Anonymous";
 
-    try {
-      const ins = db.prepare(`INSERT INTO '${q.id}' VALUES (@ts, @t, @d);`);
-      const ts = Date.now()
-      ins.run({ ts, t, d });
+      const filedir = q.file?.destination;
+      const newfilename = q.file?.filename + "." + q.file?.mimetype.split("/").pop();
 
-      db.prepare(`DELETE FROM __threadlists WHERE id = ?;`).run(q.id);
-      db.prepare("INSERT OR IGNORE INTO __threadlists VALUES (?);").run(q.id);
+      if (filedir) {
+        f.renameSync(
+          filedir + "/" + q.file.filename,
+          filedir + "/" + newfilename
+        );
+      }
 
-      p.generate(db, q.id, q.headers?.host);
+      if (q.ct && !q.wl) {
+        q.body.furl = filedir ? newfilename : null;
+        return c.newCaptchaSession(q, s, q.id);
+      }
 
-      s.redirect(`/${q.id}/#t${ts}`);
-    } catch (err) {
-      s.status(500).end(err.toString());
-      console.error(err);
-    }
+      try {
+        const ins = db.prepare(`INSERT INTO '${q.id}' VALUES (@ts, @t, @d, @furl);`);
+        const ts = Date.now()
+        ins.run({ ts, t, d, furl: filedir ? newfilename : null });
+
+        db.prepare(`DELETE FROM __threadlists WHERE id = ?;`).run(q.id);
+        db.prepare("INSERT OR IGNORE INTO __threadlists VALUES (?);").run(q.id);
+
+        pimg(filedir ? newfilename : null);
+
+        p.generate(db, q.id, q.headers?.host);
+
+        s.redirect(`/${q.id}/#t${ts}`);
+      } catch (err) {
+        s.status(500).end(err.toString());
+        console.error(err);
+      }
+    });
 });
 
 let l = a.listen(process.env.PORT || 3000, _ => {

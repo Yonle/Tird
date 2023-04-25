@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- https://github.com/Yonle/Toard -->
 <html lang="en">
-  <%- include("header.ejs", { t: `Discover - ${host}, d: `Discover Threads in ${host}` }); %>
+  <%- include("header.ejs", { t: `Discover - ${host}`, d: `Discover Threads in ${host}` }); %>
 
   <body>
     <div id="top"></div>
@@ -16,10 +16,11 @@
         <% bds.reverse().forEach(i => { %>
         <% if (!i[0].id) return %>
         <div class="post">
-          <b class="top left">
-            <a href="/<%= i[0].id %>/"><%= i[0].t %></a></b>
+          <b class="top left"><a href="/<%= i[0].id %>/"><%= i[0].t %></a></b>
             <small class="date"><%= i[0].length - 1 %> replies - <%= (new Date(i[0].ts)).toLocaleString("ia") %></small><br>
-          <pre><%= i[0].d %></pre>
+
+          <% if (i[0].furl) { %><small>File: <%= i[0].furl %></small>
+          <a class="imgurl" href="/u/<%= i[0].furl %>.webp"><img src="/u/<%= i[0].furl %>" /></a><% } %><pre><%= i[0].d %></pre>
         </div>
         <!--- Replies --->
         <div class="replies">
@@ -28,7 +29,8 @@
             <b class="top left"
               ><a href="/<%= i[0].id %>/#t<%= r.ts %>"><%= r.t %></a></b
             > <small class="date"><%= (new Date(r.ts)).toLocaleString("ia") %></small><br>
-            <pre><%= r.d %></pre>
+            <% if (r.furl) { %><small>File: <%= r.furl %></small>
+            <a class="imgurl" href="/u/<%= r.furl %>.webp"><img src="/u/<%= r.furl %>" /></a><% } %><pre><%= r.d %></pre>
           </div>
         <% }); %>
         </div>
@@ -44,6 +46,7 @@
         method="POST"
         class="fixed left right popup"
         style="bottom: 40px"
+        enctype="multipart/form-data"
       >
         <div>
           <input
@@ -63,6 +66,7 @@
           autofocus
         ></textarea
         ><br />
+        <span>Image (optional): <input type="file" name="f" accept="image/*" /></span><br>
         <button
           class="right"
           style="float: right; color: black; background: white"
