@@ -1,3 +1,4 @@
+const fs = require("fs");
 const fig = require("figlet");
 const sql = require("better-sqlite3");
 const db = new sql("captcha_sessions.db");
@@ -29,7 +30,7 @@ module.exports.newCaptchaSession = function (q, s, onid) {
 
   return tim.set(sessID, setTimeout(() => {
     db.exec(`DELETE FROM verification_sessions WHERE sess = '${sessID}';`);
-    if (q.body.furl) f.rm(__dirname + "/__uploads/" + q.body.furl, _ => null);
+    if (q.body.furl) fs.rm(__dirname + "/__uploads/" + q.body.furl, _ => null);
   }, 60000 * 1));
 }
 
