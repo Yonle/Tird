@@ -131,7 +131,7 @@
     let len = document.getElementById("posts").getElementsByTagName("pre").length;
 
     function make(data) {
-      if (!data.ts || !data.t || !data.d) return;
+      if (!data.ts || !data.t) return;
       let post = document.createElement("div");
       let span = document.createElement("small");
       let borderTop = document.createElement("div");
@@ -150,11 +150,27 @@
       borderTop.appendChild(b);
       borderTop.appendChild(span);
 
-      pre.innerText = data.d;
+      pre.innerText = data.d || "";
       post.id = "t" + data.ts;
 
       post.appendChild(borderTop);
+
+      if (data.furl) {
+        let imgdetails = document.createElement("small");
+        let img = document.createElement("img");
+        let imglink = document.createElement("a");
+
+        img.src = "/u/" + data.furl + ".webp";
+        imgdetails.innerText = "File: " + data.furl;
+        imglink.href = "/u/" + data.furl;
+
+        post.appendChild(imgdetails);
+        imglink.appendChild(img);
+        post.appendChild(imglink);
+      }
+
       post.appendChild(pre);
+      post.classList.add("post");
 
       posts.appendChild(post);
     }
