@@ -1,8 +1,14 @@
 const ejs = require("ejs");
 const fs = require("fs");
 const pagesfolder = __dirname + "/__pages";
+let viewsfolder = __dirname + "/views/"
 
 fs.mkdirSync(pagesfolder, { recursive: true });
+
+fs.stat(__dirname + "/local/views/", (e) {
+  if (e) return;
+  viewsfolder = __dirname + "/local/views/";
+});
 
 async function generate(db, id) {
   const t = db.prepare(`SELECT * FROM '${id}';`).get()
@@ -10,7 +16,7 @@ async function generate(db, id) {
 
   fs.mkdirSync(pagesfolder + "/" + id, { recursive: true });
   return fs.writeFileSync(pagesfolder + "/" + id + "/index.html",
-    await ejs.renderFile(__dirname + "/views/index.ejs",
+    await ejs.renderFile(viewsfolder + "index.ejs",
       { pst: tab.iterate(), id, srch: false, t }
     ),
     "utf8"
@@ -46,7 +52,7 @@ async function generateDiscover(db, host) {
   };
 
   return fs.writeFileSync(pagesfolder + "/discover.html",
-    await ejs.renderFile(__dirname + "/views/discover.ejs",
+    await ejs.renderFile(viewsfolder + "discover.ejs",
       { bds, host: host },
     ),
     "utf8"
