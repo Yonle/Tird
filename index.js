@@ -174,7 +174,8 @@ a.post("/create", (q, s) => {
       if (err) return q.status(500).end(err.toString());
 
       const { t, d } = q.body;
-      if (typeof(t) !== 'string' || typeof(d) !== 'string' || !t.length || !d.length) return s.status(400).end("Invalid Body");
+      if (typeof(t) !== 'string' || !t.length || typeof(d) !== 'string' || !d.length) return s.status(400).end("Invalid Form");
+      if (!t && !d && !q.file) return s.status(400).end("Atleast an title, description / an image was provided, But got nothing.");
 
       const id = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
 
@@ -209,7 +210,7 @@ a.post("/create", (q, s) => {
 });
 
 a.post("/search", (q, s) => {
-    if (typeof(q.body.q) !== 'string' || !q.body.q?.length) return s.status(400).end("Invalid Body");
+    if (typeof(q.body.q) !== 'string' || !q.body.q?.length) return s.status(400).end("Invalid Form");
 
     q.body.q = q.body.q.toLowerCase();
 
@@ -248,6 +249,7 @@ a.get("/api/verify", (q, s) => {
 
 a.get("/api/:id", (q, s) => {
     if (!ita(q.params.id)) return s.status(404).json({ error: "Not Found" });
+
     let thread = db.prepare(`SELECT * FROM '${q.params.id.toLowerCase()}';`).all();
 
     if (!isNaN(parseInt(q.query.from)) && parseInt(q.query.from) >= 0) {
@@ -271,7 +273,7 @@ a.post("/verify", (q, s) => {
 
     if (typeof(q.body?.answer) === 'string' && c.verifyCaptchaAnswer(sess, q.body?.answer)) {
       let { t, d, furl } = JSON.parse(sess.body);
-      if (!d || !d.length) return s.status(400).end("Invalid Body");
+      if (!d || !d.length) return s.status(400).end("Invalid Form");
       if (!t) t = "Anonymous";
 
       try {
@@ -313,7 +315,8 @@ a.use("/:id/reply", (q, s, n) => {
 a.post("/:id/reply", (q, s) => {
     su(q, s, err => {
       let { t, d } = q.body;
-      if (typeof(d) !== 'string' || !d.length || (t && typeof(t) !== 'string')) return s.status(400).end("Invalid Body");
+      if ((d && (typeof(d) !== 'string' || !d.length)) || (t && (typeof(t) !== 'string' || !t.length))) return s.status(400).end("Invalid Form");
+      if (!t && !d && !q.file) return s.status(400).end("Atleast an description / an image was provided, But got nothing.");
 
       if (["hello_there", "toard_api", "search"].includes(q.id)) return s.status(400).end("Post is not replyable.");
 

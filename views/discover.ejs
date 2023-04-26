@@ -30,7 +30,7 @@
               ><a href="/<%= i[0].id %>/#t<%= r.ts %>"><%= r.t %></a></b
             > <small class="date"><%= (new Date(r.ts)).toLocaleString("ia") %></small><br>
             <% if (r.furl) { %><small>File: <%= r.furl %></small>
-            <a class="imgurl" href="/u/<%= r.furl %>.webp"><img src="/u/<%= r.furl %>" /></a><% } %><pre><%= r.d %></pre>
+            <a class="imgurl" href="/u/<%= r.furl %>"><img src="/u/<%= r.furl %>.webp" /></a><% } %><pre><%= r.d %></pre>
           </div>
         <% }); %>
         </div>
@@ -62,7 +62,7 @@
           style="width: 98%; height: 10vh"
           name="d"
           placeholder="Description"
-          required
+          reqyired
           autofocus
         ></textarea
         ><br />
