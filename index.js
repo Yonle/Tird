@@ -275,15 +275,16 @@ a.post("/verify", (q, s) => {
 
     if (typeof(q.body?.answer) === 'string' && c.verifyCaptchaAnswer(sess, q.body?.answer)) {
       let { t, d, furl } = JSON.parse(sess.body);
-      if (!d || !d.length) return s.status(400).end("Invalid Form");
-      if (!t) t = "Anonymous";
 
       try {
         if (sess.onid === "create") {
+          if (!t || !t.length || !d || !d.length) return s.status(400).end("Invalid Form");
           sess.onid = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
           db.exec(`CREATE TABLE '${sess.onid}' (ts INTEGER, t TEXT, d TEXT, furl TEXT);`);
           ths++;
         }
+
+        if (!t) t = "Anonymous";
 
         const ins = db.prepare(`INSERT INTO '${sess.onid}' VALUES (@ts, @t, @d, @furl);`);
         const ts = Date.now();
