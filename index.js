@@ -21,7 +21,7 @@ const u = m({
 const pimg = furl => {
   if (!furl) return;
   s(ud + "/" + furl)
-    .resize(250, 250, { fit: 'inside' })
+    .resize(256, 256, { fit: 'inside' })
     .toFile(ud + "/" + furl + ".webp")
     .catch(err => {
       f.rmSync(ud + "/" + furl);
@@ -30,7 +30,7 @@ const pimg = furl => {
           text: "Image Corrupted", font: "sans", dpi: 300
         }
       })
-        .resize(250, 250, { fit: 'inside' })
+        .resize(256, 256, { fit: 'inside' })
         .toFile(ud + "/" + furl + ".webp");
     });
 }
