@@ -46,6 +46,8 @@ let getCookie = (c, n) => c && c.split("; ").filter(i => i.startsWith(n)).pop()?
 let db = new sql("database.db");
 let sys = new sql("config.db");
 
+let wi = require("./whois.js")(sys);
+
 // If 2 iterates executed, better-sqlite3 prevents you to do other stuffs while this happens.
 // Though, we only do reading.
 
@@ -80,6 +82,7 @@ db.transaction(_ => {
 sys.exec("CREATE TABLE IF NOT EXISTS ip_block (ip TEXT, UNIQUE(ip));");
 sys.exec("CREATE TABLE IF NOT EXISTS ip_white (ip TEXT, UNIQUE(ip));");
 sys.exec("CREATE TABLE IF NOT EXISTS locked_thread (id TEXT, UNIQUE(id));");
+sys.exec("CREATE TABLE IF NOT EXISTS isp_block (name TEXT, UNIQUE(name));");
 sys.exec("CREATE TABLE IF NOT EXISTS config (name TEXT, value TEXT, UNIQUE(name));");
 
 let ths = db.prepare("SELECT id FROM __threadlists;").all().length;
@@ -103,6 +106,7 @@ let lth = _ => db.prepare("SELECT id FROM __threadlists;").all().map(({ id }) =>
   }
 }).filter(i => i);
 
+a.use(wi);
 a.use(com());
 a.use((q, s, n) => {
   const d = new Date();
@@ -121,7 +125,7 @@ a.use((q, s, n) => {
   const ipv6 = ip.split(":");
 
   if (ipv6.length) ip = ipv6.slice(0, 2).join(":");
-
+console.log(q.bip);
   if (wl.get(ip)) return n();
   reqnum++;
 
