@@ -1,6 +1,6 @@
 const whois = require("whois");
 const sql = require("better-sqlite3");
-const cache = new sql("./whoiscache");
+const cache = new sql("./whoiscache.db");
 
 cache.exec("CREATE TABLE IF NOT EXISTS cached (ip TEXT, data TEXT);");
 

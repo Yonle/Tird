@@ -115,7 +115,7 @@ a.use((q, s, n) => {
   const cf = sys.prepare("SELECT * FROM config WHERE name = ?;");
   let ip = q.headers["x-forwarded-for"]?.split(",")[0] || q.socket.address().address;
 
-  console.log(`${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} ${ip} ${q.method} ${q.path}`);
+  console.log(`${q.bip ? "[BLOCKED ISP]" : ""}${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} ${ip} ${q.method} ${q.path}`);
 
   q.ip = ip; // IP address
   q.wl = wl.get(ip); // Whenever this IP is whitelisted
@@ -125,7 +125,7 @@ a.use((q, s, n) => {
   const ipv6 = ip.split(":");
 
   if (ipv6.length) ip = ipv6.slice(0, 2).join(":");
-console.log(q.bip);
+
   if (wl.get(ip)) return n();
   reqnum++;
 
