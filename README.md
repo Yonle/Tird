@@ -91,8 +91,10 @@ So, An IPv6 address to ban: `2a09:bc5a`
 - To unban an IP, `./modtools/ip_unblock.sh [ipaddr]`
 - To unwhitelist an IP, `./modtools/ip_unwhite.sh [ipaddr]`
 
-## Locking down
-To make the server to be read only, Set `TOARD_READ_ONLY` environment variable at startup.
+- To locking down the entire server, `./modtools/lockdown.sh`
+- To unlocking down the entire server, `./modtools/unlockdown.sh`
+- To make the server read only, `./modtools/read_only.sh`
+- To make the server unlocked from read only, `./modtools/unread_only.sh`
 
 ## Community
 * Telegram: https://t.me/yonlecoder
