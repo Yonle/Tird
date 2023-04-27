@@ -129,7 +129,7 @@ a.use((q, s, n) => {
     return s.socket.destroy();
   }
 
-  if (q.method === "POST" && bl.get(ip)) {
+  if (process.env.TOARD_READ_ONLY || q.method === "POST" && bl.get(ip)) {
     console.log(ip, "is blocked.");
     return s.status(403).end("Dong.");
   }
