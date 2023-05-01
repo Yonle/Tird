@@ -2,7 +2,7 @@ const whois = require("whois");
 const sql = require("better-sqlite3");
 const cache = new sql("./whoiscache.db");
 
-cache.exec("CREATE TABLE IF NOT EXISTS cached (ip TEXT, data TEXT);");
+cache.exec("CREATE TABLE IF NOT EXISTS cached (ip TEXT, data TEXT, UNIQUE(ip));");
 
 module.exports = sys => (q, s, n) => {
   const ip = q.headers["x-forwarded-for"]?.split(",")[0] || q.socket.address().address;
