@@ -139,6 +139,7 @@
       let pre = document.createElement("pre");
       let a = document.createElement("a");
       let b = document.createElement("b");
+      let br = document.createElement("br");
 
       len++
 
@@ -163,9 +164,11 @@
 
         img.src = "/u/" + data.furl + ".webp";
         imgdetails.innerText = "File: " + data.furl;
+        imgdetails.classList.add("filename");
         imglink.href = "/u/" + data.furl;
 
         post.appendChild(imgdetails);
+        post.appendChild(br);
         imglink.appendChild(img);
         post.appendChild(imglink);
       }
