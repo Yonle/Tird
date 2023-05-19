@@ -19,7 +19,7 @@
           <b class="top left"><a href="/<%= i[0].id %>/"><%= i[0].t %></a></b>
             <small class="date"><%= i[0].length - 1 %> replies - <%= (new Date(i[0].ts)).toLocaleString("ia") %></small><br>
 
-          <% if (i[0].furl) { %><small>File: <%= i[0].furl %></small>
+          <% if (i[0].furl) { %><small class="filename">File: <%= i[0].furl %></small>
           <a class="imgurl" href="/u/<%= i[0].furl %>"><img src="/u/<%= i[0].furl %>.webp" loading="lazy" /></a><% } %><pre><%= i[0].d %></pre>
         </div>
         <!--- Replies --->
@@ -29,7 +29,7 @@
             <b class="top left"
               ><a href="/<%= i[0].id %>/#t<%= r.ts %>"><%= r.t %></a></b
             > <small class="date"><%= (new Date(r.ts)).toLocaleString("ia") %></small><br>
-            <% if (r.furl) { %><small>File: <%= r.furl %></small>
+            <% if (r.furl) { %><small class="filename">File: <%= r.furl %></small>
             <a class="imgurl" href="/u/<%= r.furl %>"><img src="/u/<%= r.furl %>.webp" loading="lazy" /></a><% } %><pre><%= r.d %></pre>
           </div>
         <% }); %>
