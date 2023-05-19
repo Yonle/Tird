@@ -20,7 +20,7 @@
           <b><a href="<%= srch ? "/" + p.id + "/#t" + p.ts : "#t" + p.ts %>"><%= p.t %></a></b>
           <small class="date"><%- srch ? `at <a href="/${p.id}/">/${p.id}/</a> - ` : "" %><%= (new Date(p.ts)).toLocaleString("ia") %></small>
         </div>
-        <% if (p.furl) { %><small>File: <%= p.furl %></small>
+        <% if (p.furl) { %><small class="filename">File: <%= p.furl %></small><br>
         <a class="imgurl" href="/u/<%= p.furl %>"><img src="/u/<%= p.furl %>.webp" loading="lazy" /></a><% } %><pre><%= p.d %></pre>
       </div>
       <% }; %>
