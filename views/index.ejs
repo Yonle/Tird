@@ -21,7 +21,7 @@
           <small class="date"><%- srch ? `at <a href="/${p.id}/">/${p.id}/</a> - ` : "" %><%= (new Date(p.ts)).toLocaleString("ia") %></small>
         </div>
         <% if (p.furl) { %><small class="filename">File: <%= p.furl %></small><br>
-        <a class="imgurl" href="/u/<%= p.furl %>"><img src="/u/<%= p.furl %>.webp" loading="lazy" /></a><% } %><pre><%= p.d %></pre>
+        <a class="imgurl" href="/u/<%= p.furl %>"><img src="/u/<%= p.furl %>.webp" loading="lazy" /></a><% } %><pre><%- sf(p.d); %></pre>
       </div>
       <% }; %>
     </div>
@@ -127,6 +127,7 @@
 
     <div id="bottom"></div>
   </body>
+  <script src="/simple_formatter.js"></script>
   <script>
     let posts = document.getElementById("posts");
     let len = document.getElementById("posts").getElementsByTagName("pre").length;
@@ -152,7 +153,7 @@
       borderTop.appendChild(b);
       borderTop.appendChild(span);
 
-      pre.innerText = data.d || "";
+      pre.innerHTML = formatText(data.d) || "";
       post.id = "t" + data.ts;
 
       post.appendChild(borderTop);
