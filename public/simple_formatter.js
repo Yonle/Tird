@@ -19,10 +19,15 @@ function filter(text) {
   return String(text).replace(_MATCH_HTML, encode_char);
 }
 
+function fixspan(text) {
+  return text.split("</span>\n")
+    .join("</span>");
+}
+
 function formatText(text) {
-  return filter(text).split("\n")
+  return fixspan(filter(text).split("\n")
     .map(makegreentext)
-    .join("\n");
+    .join("\n"));
 }
 
 if (typeof(module) === "object") {
