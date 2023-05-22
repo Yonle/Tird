@@ -8,6 +8,7 @@ const s = require("sharp");
 const p = require("./pages.js");
 const c = require("./captcha.js");
 const f = require("fs");
+const sf = require("./public/simple_formatter.js");
 const ud = __dirname + "/__uploads";
 const u = m({
   dest: ud,
@@ -223,7 +224,7 @@ a.post("/search", (q, s) => {
     }];
 
     s.render("index.ejs", {
-      pst: fnd, id: "search", srch: q.body.q, ct: q.ct, t: fnd[0]
+      pst: fnd, id: "search", srch: q.body.q, ct: q.ct, t: fnd[0], sf
     });
 });
 
