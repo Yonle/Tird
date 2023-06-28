@@ -15,6 +15,12 @@ A text & image bulletin board.
 
 - That's all.
 
+## Migrating from Toard
+Copy `config.db` and `database.db` from Toard to Tird directory, Then run:
+```
+./migrate-from-toard.sh
+```
+
 ## Setting up
 * Clone the repo
 * Install the dependencies with `npm install`
