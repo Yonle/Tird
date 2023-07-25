@@ -164,7 +164,7 @@ a.post("/create", (q, s) => {
       if (typeof(t) !== 'string' || !t.length || typeof(d) !== 'string' || !d.length) return s.status(400).end("Invalid Form");
       if (!t && !d && !q.file) return s.status(400).end("Atleast an title, description / an image was provided, But got nothing.");
 
-      const id = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
+      const id = Math.random().toString(36).slice(2) + "_" + (ths - 2 + 1);
 
       const filedir = q.file?.destination;
       const newfilename = q.file?.filename + "." + q.file?.mimetype.split("/").pop();
@@ -264,7 +264,7 @@ a.post("/verify", (q, s) => {
       try {
         if (sess.onid === "create") {
           if (!t || !t.length || !d || !d.length) return s.status(400).end("Invalid Form");
-          sess.onid = Math.random().toString(36).slice(2) + "_" + (1000000 + ths - 2 + 1);
+          sess.onid = Math.random().toString(36).slice(2) + "_" + (ths - 2 + 1);
           db.exec(`CREATE TABLE '${sess.onid}' (ts INTEGER, t TEXT, d TEXT, furl TEXT);`);
           ths++;
         }
