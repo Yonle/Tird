@@ -21,7 +21,6 @@
           <% if (i[0].furl) { %><small class="filename">File: <%= i[0].furl %></small><br>
           <a class="imgurl" href="/u/<%= i[0].furl %>"><img src="/u/<%= i[0].furl %>.webp" loading="lazy" /></a><% } %><pre><%- sf(i[0].d) %></pre>
           <!--- Replies --->
-          <% if (i.length) { %>
           <details open>
           <summary><%= i[0].length - 1 %> replies</summary>
           <div class="replies">
@@ -36,7 +35,6 @@
             <% }); %>
           </div>
           </details>
-          <% } %>
         </div>
         <% }); %>
       </div>
